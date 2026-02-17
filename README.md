@@ -1,59 +1,215 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Corran Pharma - Pharmaceutical Company Website
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A professional pharmaceutical company website built with Laravel, featuring product management, admin panel, and inquiry system.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- 🏢 Company Information Pages (Home, About, Contact)
+- 💊 Product Management System
+- 📜 Certifications Gallery
+- 📝 Contact Inquiry Form
+- 🔐 Secure Admin Panel
+- 📱 Fully Responsive Design
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Technology Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Framework:** Laravel
+- **Database:** MySQL (phpMyAdmin)
+- **Frontend:** Bootstrap 5, JavaScript
+- **Server:** Linux Based (Deployment ready)
 
-## Learning Laravel
+## Requirements
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- PHP >= 7.4
+- MySQL >= 5.7
+- Composer
+- Web Server (Apache/Nginx)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation
 
-## Laravel Sponsors
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/pharma-website.git
+   cd pharma-website
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-### Premium Partners
+   Install dependencies
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+bash
+composer install
+Environment setup
 
-## Contributing
+bash
+cp .env.example .env
+php artisan key:generate
+Database configuration
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Create a MySQL database named pharma_db
 
-## Code of Conduct
+Update .env file with database credentials
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Run database migrations
 
-## Security Vulnerabilities
+bash
+php artisan migrate
+Create upload directories
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+bash
+mkdir -p public/uploads/{categories,products,certificates}
+chmod -R 755 public/uploads
+Start the server
 
-## License
+bash
+php artisan serve
+Access the website
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Frontend: http://localhost:8000
+
+Admin Panel: http://localhost:8000/admin/login
+
+Default Admin: admin@pharma.com / admin123
+
+Project Structure
+text
+pharma-website/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── HomeController.php
+│   │   │   └── Admin/
+│   │   │       ├── AuthController.php
+│   │   │       ├── CategoryController.php
+│   │   │       ├── ProductController.php
+│   │   │       └── ...
+│   │   └── Middleware/
+│   └── Models/
+│       ├── Category.php
+│       ├── Product.php
+│       ├── Certificate.php
+│       └── Inquiry.php
+├── resources/
+│   └── views/
+│       ├── layouts/
+│       ├── admin/
+│       │   ├── layouts/
+│       │   ├── categories/
+│       │   ├── products/
+│       │   └── ...
+│       └── [frontend views]
+├── routes/
+│   └── web.php
+├── public/
+│   └── uploads/
+│       ├── categories/
+│       ├── products/
+│       └── certificates/
+└── [other Laravel files]
+Features in Detail
+Admin Panel
+Secure login system
+
+Dashboard with statistics
+
+Category management (CRUD)
+
+Product management (CRUD)
+
+Certificate gallery management
+
+Contact inquiry viewer
+
+Website settings manager
+
+Frontend Features
+Responsive design
+
+Product catalog by category
+
+Product detail pages
+
+Certification gallery
+
+Contact form with validation
+
+Company information pages
+
+Database Schema
+categories: id, name, slug, description, image, status
+
+products: id, category_id, name, slug, composition, description, packaging, image, status
+
+certificates: id, title, image, description
+
+inquiries: id, name, email, phone, message, status
+
+users: id, name, email, password, is_admin
+
+settings: id, key_name, key_value
+
+Deployment
+Server Requirements
+PHP 7.4 or higher
+
+MySQL 5.7 or higher
+
+Apache/Nginx web server
+
+SSL certificate
+
+Deployment Steps
+Upload files to server
+
+Configure .env file
+
+Set proper permissions
+
+Configure web server
+
+Enable SSL
+
+Test the website
+
+Security Features
+CSRF Protection
+
+Password encryption
+
+Secure admin authentication
+
+Input validation
+
+XSS protection
+
+Support
+For support, email info@supportindiatech.com or call +91 8898851830.
+
+License
+This project is proprietary software owned by Corran Pharma Pvt. Ltd.
+
+Credits
+Developed by SUPPORT INDIA TECH
+
+Developer: Ashpak Shaikh
+
+Website: [Coming Soon]
+
+Email: info@supportindiatech.com
+
+Project Timeline
+Start Date: February 16, 2026
+
+Developer: Ashpak Shaikh
+
+Client: Corran Pharma Pvt. Ltd.
+
+Changelog
+Version 1.0.0 (February 17, 2026)
+Initial release
+
+Basic website structure
+
+Admin panel implementation
+
+Product management system
+
+Contact form functionality
