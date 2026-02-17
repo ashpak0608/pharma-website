@@ -1,0 +1,48 @@
+# Laravel specific
+/vendor/
+node_modules/
+.env
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+storage/*.key
+/.idea
+/.vscode
+
+# Laravel logs
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+
+# IDE helpers
+_ide_helper.php
+.phpstorm.meta.php
+
+# Composer
+composer.phar
+/composer.lock
+
+# PHPUnit
+/phpunit.xml
+
+# Environment files
+.env
+.env.production
+.env.local
+.env.staging
+
+# Uploads (optional - if you want to track uploads, remove this)
+/public/uploads/*
+!/public/uploads/.gitkeep
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
