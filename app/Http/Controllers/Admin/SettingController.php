@@ -19,12 +19,14 @@ class SettingController extends Controller
         $data = $request->except('_token');
         
         foreach ($data as $key => $value) {
-            Setting::updateOrCreate(
-                ['key_name' => $key],
-                ['key_value' => $value]
-            );
+            if (!is_null($value)) {  // Only update if value is not null
+                Setting::updateOrCreate(
+                    ['key_name' => $key],
+                    ['key_value' => $value]
+                );
+            }
         }
 
-        return redirect()->back()->with('success', 'Settings updated successfully');
+        return redirect()->back()->with('success', 'All settings have been updated successfully!');
     }
 }
