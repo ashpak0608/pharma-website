@@ -49,14 +49,16 @@ class HomeController extends Controller
         
         // Get all categories for filter dropdown
         $categories = Category::where('status', 1)->get();
+        $settings = Setting::pluck('key_value', 'key_name')->toArray();
         
-        return view('products', compact('products', 'categories'));
+        return view('products', compact('products', 'categories', 'settings'));
     }
 
     public function productDetail($slug)
     {
         $product = Product::with('category')->where('slug', $slug)->firstOrFail();
-        return view('product-detail', compact('product'));
+        $settings = Setting::pluck('key_value', 'key_name')->toArray();
+        return view('product-detail', compact('product', 'settings'));
     }
 
     public function certificates()

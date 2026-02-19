@@ -4,85 +4,151 @@
 
 @section('content')
 <div class="container-fluid">
+    <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Edit Category: {{ $category->name }}</h2>
-        <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to Categories
+        <div>
+            <h2 class="fw-bold mb-2">Edit Category: {{ $category->name }}</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.categories.index') }}">Categories</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Category</li>
+                </ol>
+            </nav>
+        </div>
+        <a href="{{ route('admin.categories.index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Categories
         </a>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            <form action="{{ route('admin.categories.update', $category) }}" method="POST" enctype="multipart/form-data">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            <form action="{{ route('admin.categories.update', $category) }}" method="POST" enctype="multipart/form-data" id="categoryForm">
                 @csrf
                 @method('PUT')
 
                 <div class="row">
                     <div class="col-md-8">
-                        <!-- Main Form Fields -->
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Category Name <span class="text-danger">*</span></label>
-                            <input type="text" 
-                                   class="form-control @error('name') is-invalid @enderror" 
-                                   id="name" 
-                                   name="name" 
-                                   value="{{ old('name', $category->name) }}" 
-                                   required>
-                            @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="text-muted">The name should be unique and descriptive</small>
+                        <!-- Main Form Card -->
+                        <div class="card border-0 bg-light mb-4">
+                            <div class="card-body">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="fas fa-info-circle me-2 text-primary"></i>
+                                    Category Information
+                                </h6>
+                                
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">
+                                        Category Name <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control @error('name') is-invalid @enderror" 
+                                           id="name" 
+                                           name="name" 
+                                           value="{{ old('name', $category->name) }}" 
+                                           required>
+                                    @error('name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="slug" class="form-label">Slug</label>
+                                    <input type="text" 
+                                           class="form-control bg-light" 
+                                           id="slug" 
+                                           name="slug" 
+                                           value="{{ old('slug', $category->slug) }}" 
+                                           readonly>
+                                    <small class="text-muted">
+                                        <i class="fas fa-link me-1"></i>
+                                        /products/{{ $category->slug }}
+                                    </small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea class="form-control @error('description') is-invalid @enderror" 
+                                              id="description" 
+                                              name="description" 
+                                              rows="5">{{ old('description', $category->description) }}</textarea>
+                                    @error('description')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="slug" class="form-label">Slug</label>
-                            <input type="text" 
-                                   class="form-control @error('slug') is-invalid @enderror" 
-                                   id="slug" 
-                                   name="slug" 
-                                   value="{{ old('slug', $category->slug) }}" 
-                                   readonly>
-                            @error('slug')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="text-muted">Slug is automatically generated from the name</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" 
-                                      id="description" 
-                                      name="description" 
-                                      rows="5">{{ old('description', $category->description) }}</textarea>
-                            @error('description')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <!-- Category Stats Card -->
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="fas fa-chart-bar me-2 text-primary"></i>
+                                    Category Statistics
+                                </h6>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="stat-box bg-white p-3 rounded text-center">
+                                            <div class="small text-muted">Total Products</div>
+                                            <div class="h3 mb-0 text-primary">{{ $category->products->count() }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="stat-box bg-white p-3 rounded text-center">
+                                            <div class="small text-muted">Active Products</div>
+                                            <div class="h3 mb-0 text-success">{{ $category->products->where('status', 1)->count() }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="stat-box bg-white p-3 rounded text-center">
+                                            <div class="small text-muted">Created</div>
+                                            <div class="fw-semibold">{{ $category->created_at->format('d M Y') }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="stat-box bg-white p-3 rounded text-center">
+                                            <div class="small text-muted">Last Updated</div>
+                                            <div class="fw-semibold">{{ $category->updated_at->format('d M Y') }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="col-md-4">
-                        <!-- Sidebar Fields -->
-                        <div class="card mb-3">
-                            <div class="card-header bg-light">
-                                <h6 class="mb-0">Category Image</h6>
-                            </div>
+                        <!-- Image Upload Card -->
+                        <div class="card border-0 bg-light mb-4">
                             <div class="card-body">
-                                <!-- Current Image Preview -->
+                                <h6 class="fw-bold mb-3">
+                                    <i class="fas fa-image me-2 text-primary"></i>
+                                    Category Image
+                                </h6>
+                                
+                                <!-- Current Image -->
                                 @if($category->image)
-                                    <div class="mb-3 text-center">
-                                        <label class="form-label text-muted small">Current Image</label>
-                                        <div class="border rounded p-2">
-                                            <img src="{{ asset($category->image) }}" 
-                                                 alt="{{ $category->name }}" 
-                                                 class="img-fluid" 
-                                                 style="max-height: 150px; width: auto;">
-                                        </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-muted small">Current Image</label>
+                                    <div class="border rounded p-2 bg-white text-center">
+                                        <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" class="img-fluid" style="max-height: 100px;">
                                     </div>
+                                </div>
                                 @endif
 
-                                <!-- Image Upload -->
+                                <!-- Image Preview -->
+                                <div class="text-center mb-3">
+                                    <div id="imagePreview" class="image-preview rounded bg-white p-3 d-none">
+                                        <img id="preview" src="#" alt="Preview" class="img-fluid" style="max-height: 150px;">
+                                    </div>
+                                    <div id="noImagePreview" class="no-image-preview bg-white rounded p-4 text-center {{ $category->image ? 'd-none' : '' }}">
+                                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-2"></i>
+                                        <p class="text-muted small mb-0">Upload new image</p>
+                                    </div>
+                                </div>
+
+                                <!-- File Input -->
                                 <div class="mb-3">
-                                    <label for="image" class="form-label">Update Image</label>
+                                    <label for="image" class="form-label">Change Image</label>
                                     <input type="file" 
                                            class="form-control @error('image') is-invalid @enderror" 
                                            id="image" 
@@ -94,25 +160,19 @@
                                     @enderror
                                     <small class="text-muted d-block mt-1">
                                         <i class="fas fa-info-circle"></i> 
-                                        Allowed: jpeg, png, jpg. Max size: 2MB
+                                        Leave empty to keep current image
                                     </small>
-                                </div>
-
-                                <!-- New Image Preview -->
-                                <div id="imagePreview" class="text-center d-none">
-                                    <label class="form-label text-muted small">New Image Preview</label>
-                                    <div class="border rounded p-2">
-                                        <img id="preview" src="#" alt="Preview" class="img-fluid" style="max-height: 150px; width: auto;">
-                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card mb-3">
-                            <div class="card-header bg-light">
-                                <h6 class="mb-0">Category Status</h6>
-                            </div>
+                        <!-- Status Card -->
+                        <div class="card border-0 bg-light mb-4">
                             <div class="card-body">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="fas fa-toggle-on me-2 text-primary"></i>
+                                    Status
+                                </h6>
                                 <div class="form-check form-switch">
                                     <input type="checkbox" 
                                            class="form-check-input" 
@@ -120,91 +180,92 @@
                                            name="status" 
                                            value="1" 
                                            {{ old('status', $category->status) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="status">Active</label>
+                                    <label class="form-check-label fw-semibold" for="status">Active</label>
                                 </div>
-                                <small class="text-muted d-block mt-2">
-                                    <i class="fas fa-info-circle"></i>
-                                    Inactive categories won't be displayed on the website
-                                </small>
                             </div>
                         </div>
 
-                        <div class="card mb-3">
-                            <div class="card-header bg-light">
-                                <h6 class="mb-0">Category Information</h6>
-                            </div>
+                        <!-- Products in this Category -->
+                        @if($category->products->count() > 0)
+                        <div class="card border-0 bg-light">
                             <div class="card-body">
-                                <ul class="list-unstyled mb-0">
-                                    <li class="mb-2">
-                                        <i class="fas fa-calendar-alt text-primary me-2"></i>
-                                        <strong>Created:</strong> 
-                                        {{ $category->created_at->format('d M Y, h:i A') }}
-                                    </li>
-                                    <li class="mb-2">
-                                        <i class="fas fa-edit text-success me-2"></i>
-                                        <strong>Last Updated:</strong> 
-                                        {{ $category->updated_at->format('d M Y, h:i A') }}
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-cubes text-info me-2"></i>
-                                        <strong>Products Count:</strong> 
-                                        {{ $category->products->count() }}
-                                    </li>
-                                </ul>
+                                <h6 class="fw-bold mb-3">
+                                    <i class="fas fa-capsules me-2 text-primary"></i>
+                                    Products in this Category
+                                </h6>
+                                <div class="product-list">
+                                    @foreach($category->products->take(5) as $product)
+                                    <div class="d-flex align-items-center mb-2 p-2 bg-white rounded">
+                                        <div class="flex-shrink-0 me-2">
+                                            @if($product->image)
+                                                <img src="{{ asset($product->image) }}" alt="" style="width: 30px; height: 30px; object-fit: cover;" class="rounded">
+                                            @else
+                                                <div class="bg-light rounded" style="width: 30px; height: 30px;"></div>
+                                            @endif
+                                        </div>
+                                        <div class="flex-grow-1 small">
+                                            <div class="fw-semibold">{{ Str::limit($product->name, 20) }}</div>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                    @if($category->products->count() > 5)
+                                    <div class="text-center mt-2">
+                                        <small class="text-muted">+ {{ $category->products->count() - 5 }} more</small>
+                                    </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
+                        @endif
                     </div>
                 </div>
 
                 <hr class="my-4">
 
+                <!-- Form Actions -->
                 <div class="d-flex justify-content-end gap-2">
-                    <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Cancel
+                    <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary px-4">
+                        <i class="fas fa-times me-2"></i>Cancel
                     </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Update Category
+                    <button type="submit" class="btn btn-primary px-4" id="submitBtn">
+                        <i class="fas fa-save me-2"></i>Update Category
                     </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Danger Zone - Delete Category -->
+    <!-- Danger Zone -->
     @if($category->products->count() == 0)
-    <div class="card mt-4 border-danger">
-        <div class="card-header bg-danger text-white">
-            <h6 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Danger Zone</h6>
-        </div>
+    <div class="card border-0 shadow-sm mt-4 border-danger">
         <div class="card-body">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h6 class="mb-1">Delete this category</h6>
-                    <p class="text-muted mb-0 small">Once you delete this category, there is no going back. Please be certain.</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="fw-bold text-danger mb-1">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Danger Zone
+                    </h6>
+                    <p class="text-muted small mb-0">Once you delete this category, there is no going back.</p>
                 </div>
-                <div class="col-md-4 text-end">
-                    <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this category? This action cannot be undone.');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-outline-danger">
-                            <i class="fas fa-trash"></i> Delete Category
-                        </button>
-                    </form>
-                </div>
+                <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this category? This action cannot be undone.');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="fas fa-trash me-2"></i>Delete Category
+                    </button>
+                </form>
             </div>
         </div>
     </div>
     @else
-    <div class="card mt-4 border-warning">
-        <div class="card-header bg-warning text-white">
-            <h6 class="mb-0"><i class="fas fa-exclamation-circle"></i> Cannot Delete Category</h6>
-        </div>
+    <div class="card border-0 shadow-sm mt-4 border-warning">
         <div class="card-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <p class="mb-0">
-                        <i class="fas fa-info-circle text-warning me-2"></i>
-                        This category has {{ $category->products->count() }} product(s) associated with it. 
+            <div class="d-flex align-items-center">
+                <i class="fas fa-exclamation-circle text-warning fa-2x me-3"></i>
+                <div>
+                    <h6 class="fw-bold text-warning mb-1">Cannot Delete Category</h6>
+                    <p class="text-muted small mb-0">
+                        This category has {{ $category->products->count() }} product(s). 
                         Please reassign or delete these products before deleting this category.
                     </p>
                 </div>
@@ -214,12 +275,95 @@
     @endif
 </div>
 
-<!-- JavaScript for Image Preview -->
+@push('styles')
+<style>
+    .image-preview {
+        border: 2px dashed #dee2e6;
+        transition: all 0.3s;
+        min-height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .no-image-preview {
+        border: 2px dashed #dee2e6;
+        background: white;
+        min-height: 150px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 12px 15px;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.1);
+    }
+    
+    .btn-primary {
+        background: var(--secondary-color);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 500;
+    }
+    
+    .btn-primary:hover {
+        background: #219a52;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+    }
+    
+    .btn-outline-danger {
+        border: 2px solid #dc3545;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 500;
+    }
+    
+    .btn-outline-danger:hover {
+        background: #dc3545;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .border-danger {
+        border-left: 4px solid #dc3545 !important;
+    }
+    
+    .border-warning {
+        border-left: 4px solid #ffc107 !important;
+    }
+    
+    .stat-box {
+        transition: all 0.3s;
+    }
+    
+    .stat-box:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .product-list {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+</style>
+@endpush
+
 @push('scripts')
 <script>
 function previewImage(input) {
     const preview = document.getElementById('preview');
     const previewContainer = document.getElementById('imagePreview');
+    const noImagePreview = document.getElementById('noImagePreview');
     
     if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -227,61 +371,23 @@ function previewImage(input) {
         reader.onload = function(e) {
             preview.src = e.target.result;
             previewContainer.classList.remove('d-none');
+            noImagePreview.classList.add('d-none');
         }
         
         reader.readAsDataURL(input.files[0]);
     } else {
         preview.src = '#';
         previewContainer.classList.add('d-none');
+        noImagePreview.classList.remove('d-none');
     }
 }
 
-// Auto-generate slug from name (optional enhancement)
-document.getElementById('name').addEventListener('keyup', function() {
-    // You can enable this if you want to auto-generate slug on edit
-    // But currently it's set to readonly
+// Form submission with loading state
+document.getElementById('categoryForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
 });
 </script>
-@endpush
-
-<!-- Custom CSS -->
-@push('styles')
-<style>
-    .form-label {
-        font-weight: 500;
-        color: #495057;
-    }
-    
-    .card {
-        box-shadow: 0 2px 4px rgba(0,0,0,.1);
-        border: none;
-        margin-bottom: 1rem;
-    }
-    
-    .card-header {
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #dee2e6;
-        font-weight: 600;
-    }
-    
-    .border-danger {
-        border-left: 4px solid #dc3545;
-    }
-    
-    .border-warning {
-        border-left: 4px solid #ffc107;
-    }
-    
-    .gap-2 {
-        gap: 0.5rem;
-    }
-    
-    @media (max-width: 768px) {
-        .col-md-4.text-end {
-            text-align: left !important;
-            margin-top: 1rem;
-        }
-    }
-</style>
 @endpush
 @endsection

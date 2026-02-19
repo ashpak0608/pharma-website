@@ -8,9 +8,38 @@ use Illuminate\Http\Request;
 
 class InquiryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $inquiries = Inquiry::latest()->get();
+        $query = Inquiry::query();
+        
+        // Search functionality
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('email', 'LIKE', "%{$search}%")
+                  ->orWhere('phone', 'LIKE', "%{$search}%")
+                  ->orWhere('message', 'LIKE', "%{$search}%");
+            });
+        }
+        
+        // Status filter
+        if ($request->has('status') && $request->status !== '') {
+            if ($request->status == 'unread') {
+                $query->where('status', 0);
+            } elseif ($request->status == 'read') {
+                $query->where('status', 1);
+            }
+        }
+        
+        // Date filter
+        if ($request->has('date') && !empty($request->date)) {
+            $query->whereDate('created_at', $request->date);
+        }
+        
+        // Get paginated results
+        $inquiries = $query->latest()->paginate(10);
+        
         return view('admin.inquiries.index', compact('inquiries'));
     }
 

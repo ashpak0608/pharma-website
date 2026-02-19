@@ -4,14 +4,33 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::latest()->get();
+        $query = Category::with('products');
+        
+        // Search functionality
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('description', 'LIKE', "%{$search}%");
+            });
+        }
+        
+        // Status filter
+        if ($request->has('status') && $request->status !== '') {
+            $query->where('status', $request->status);
+        }
+        
+        // Get paginated results - 10 items per page
+        $categories = $query->orderBy('created_at', 'desc')->paginate(10);
+        
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -59,6 +78,7 @@ class CategoryController extends Controller
         $data['slug'] = Str::slug($request->name);
 
         if ($request->hasFile('image')) {
+            // Delete old image
             if ($category->image && file_exists(public_path($category->image))) {
                 unlink(public_path($category->image));
             }
@@ -75,9 +95,17 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        // Check if category has products
+        if ($category->products()->count() > 0) {
+            return redirect()->route('admin.categories.index')
+                ->with('error', 'Cannot delete category with associated products');
+        }
+        
+        // Delete image if exists
         if ($category->image && file_exists(public_path($category->image))) {
             unlink(public_path($category->image));
         }
+        
         $category->delete();
         return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully');
     }

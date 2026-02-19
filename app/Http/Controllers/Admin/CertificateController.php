@@ -8,11 +8,25 @@ use Illuminate\Http\Request;
 
 class CertificateController extends Controller
 {
-    public function index()
+   public function index(Request $request)
     {
-        $certificates = Certificate::latest()->get();
+        $query = Certificate::query();
+        
+        // Search functionality
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'LIKE', "%{$search}%")
+                  ->orWhere('description', 'LIKE', "%{$search}%");
+            });
+        }
+        
+        // Get paginated results
+        $certificates = $query->orderBy('created_at', 'desc')->paginate(9);
+        
         return view('admin.certificates.index', compact('certificates'));
     }
+
 
     public function create()
     {

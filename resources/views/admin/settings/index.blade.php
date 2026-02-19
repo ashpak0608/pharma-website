@@ -4,46 +4,55 @@
 
 @section('content')
 <div class="container-fluid">
+    <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Website Settings</h2>
+        <div>
+            <h2 class="fw-bold mb-2">Website Settings</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Settings</li>
+                </ol>
+            </nav>
+        </div>
     </div>
 
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
+            <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
-    <div class="card">
-        <div class="card-body">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
             <form action="{{ route('admin.settings.update') }}" method="POST">
                 @csrf
 
-                <!-- Settings Tabs -->
+                <!-- Settings Tabs - Fixed IDs and targets -->
                 <ul class="nav nav-tabs mb-4" id="settingsTab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="company-tab" data-bs-toggle="tab" data-bs-target="#company" type="button" role="tab">
+                        <button class="nav-link active" id="company-tab" data-bs-toggle="tab" data-bs-target="#company" type="button" role="tab" aria-controls="company" aria-selected="true">
                             <i class="fas fa-building me-2"></i>Company Info
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="content-tab" data-bs-toggle="tab" data-bs-target="#content" type="button" role="tab">
-                            <i class="fas fa-file-alt me-2"></i>Home Page Content
+                        <button class="nav-link" id="home-content-tab" data-bs-toggle="tab" data-bs-target="#home-content" type="button" role="tab" aria-controls="home-content" aria-selected="false">
+                            <i class="fas fa-home me-2"></i>Home Page Content
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="about-tab" data-bs-toggle="tab" data-bs-target="#about" type="button" role="tab">
+                        <button class="nav-link" id="about-tab" data-bs-toggle="tab" data-bs-target="#about" type="button" role="tab" aria-controls="about" aria-selected="false">
                             <i class="fas fa-info-circle me-2"></i>About Page
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="social-tab" data-bs-toggle="tab" data-bs-target="#social" type="button" role="tab">
+                        <button class="nav-link" id="social-tab" data-bs-toggle="tab" data-bs-target="#social" type="button" role="tab" aria-controls="social" aria-selected="false">
                             <i class="fas fa-share-alt me-2"></i>Social Media
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab">
+                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">
                             <i class="fas fa-address-card me-2"></i>Contact Info
                         </button>
                     </li>
@@ -51,7 +60,7 @@
 
                 <div class="tab-content" id="settingsTabContent">
                     <!-- Company Info Tab -->
-                    <div class="tab-pane fade show active" id="company" role="tabpanel">
+                    <div class="tab-pane fade show active" id="company" role="tabpanel" aria-labelledby="company-tab">
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="company_name" class="form-label">Company Name <span class="text-danger">*</span></label>
@@ -130,8 +139,8 @@
                         </div>
                     </div>
 
-                    <!-- Home Page Content Tab -->
-                    <div class="tab-pane fade" id="content" role="tabpanel">
+                    <!-- Home Page Content Tab - Fixed ID -->
+                    <div class="tab-pane fade" id="home-content" role="tabpanel" aria-labelledby="home-content-tab">
                         <div class="row">
                             <div class="col-12 mb-3">
                                 <label for="hero_title" class="form-label">Hero Title</label>
@@ -196,7 +205,7 @@
                     </div>
 
                     <!-- About Page Tab -->
-                    <div class="tab-pane fade" id="about" role="tabpanel">
+                    <div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">
                         <div class="row">
                             <div class="col-12 mb-3">
                                 <label for="about_content" class="form-label">About Content</label>
@@ -252,7 +261,7 @@
                     </div>
 
                     <!-- Social Media Tab -->
-                    <div class="tab-pane fade" id="social" role="tabpanel">
+                    <div class="tab-pane fade" id="social" role="tabpanel" aria-labelledby="social-tab">
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="facebook_url" class="form-label">
@@ -332,37 +341,10 @@
                                 <small class="text-muted">Include country code (e.g., +918898851830)</small>
                             </div>
                         </div>
-
-                        <!-- Social Media Preview -->
-                        <div class="alert alert-info mt-3">
-                            <h6 class="alert-heading"><i class="fas fa-eye me-2"></i>Preview</h6>
-                            <p class="mb-2">Your social media icons will appear like this:</p>
-                            <div class="d-flex gap-3">
-                                @if(old('facebook_url', $settings['facebook_url'] ?? ''))
-                                    <a href="#" class="btn btn-outline-primary btn-sm" target="_blank"><i class="fab fa-facebook"></i></a>
-                                @endif
-                                @if(old('twitter_url', $settings['twitter_url'] ?? ''))
-                                    <a href="#" class="btn btn-outline-info btn-sm" target="_blank"><i class="fab fa-twitter"></i></a>
-                                @endif
-                                @if(old('linkedin_url', $settings['linkedin_url'] ?? ''))
-                                    <a href="#" class="btn btn-outline-primary btn-sm" target="_blank"><i class="fab fa-linkedin"></i></a>
-                                @endif
-                                @if(old('instagram_url', $settings['instagram_url'] ?? ''))
-                                    <a href="#" class="btn btn-outline-danger btn-sm" target="_blank"><i class="fab fa-instagram"></i></a>
-                                @endif
-                                @if(old('youtube_url', $settings['youtube_url'] ?? ''))
-                                    <a href="#" class="btn btn-outline-danger btn-sm" target="_blank"><i class="fab fa-youtube"></i></a>
-                                @endif
-                                @if(old('whatsapp_number', $settings['whatsapp_number'] ?? ''))
-                                    <a href="#" class="btn btn-outline-success btn-sm" target="_blank"><i class="fab fa-whatsapp"></i></a>
-                                @endif
-                            </div>
-                            <p class="mb-0 mt-2 small text-muted">Icons will only appear if URLs are provided. Empty fields hide the icon.</p>
-                        </div>
                     </div>
 
                     <!-- Contact Info Tab -->
-                    <div class="tab-pane fade" id="contact" role="tabpanel">
+                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="contact_email" class="form-label">Contact Email</label>
@@ -415,56 +397,37 @@
                 <hr class="my-4">
 
                 <div class="d-flex justify-content-end gap-2">
-                    <button type="reset" class="btn btn-secondary">
+                    <button type="reset" class="btn btn-secondary px-4" onclick="return confirm('Are you sure you want to reset all changes?')">
                         <i class="fas fa-undo me-2"></i>Reset
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary px-4">
                         <i class="fas fa-save me-2"></i>Save All Settings
                     </button>
                 </div>
             </form>
         </div>
     </div>
-
-    <!-- Info Card -->
-    <div class="card mt-4">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <h6><i class="fas fa-info-circle text-info me-2"></i>How to use Social Media Links</h6>
-                    <ol class="text-muted small">
-                        <li>Enter complete URLs including https:// (e.g., https://facebook.com/yourpage)</li>
-                        <li>Leave fields empty to hide specific social icons</li>
-                        <li>WhatsApp number should include country code (e.g., +918898851830)</li>
-                        <li>All links will open in a new tab</li>
-                    </ol>
-                </div>
-                <div class="col-md-6">
-                    <h6><i class="fas fa-rocket text-success me-2"></i>Quick Tips</h6>
-                    <ul class="text-muted small">
-                        <li>Keep your social media profiles updated</li>
-                        <li>Use consistent branding across all platforms</li>
-                        <li>Add your website link in social media bios</li>
-                        <li>Regularly monitor your social media engagement</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 @push('styles')
 <style>
+    .nav-tabs {
+        border-bottom: 2px solid #e9ecef;
+    }
+    
     .nav-tabs .nav-link {
-        color: var(--primary-color);
+        color: #495057;
         font-weight: 500;
         padding: 12px 20px;
         border: none;
         border-bottom: 3px solid transparent;
+        background: transparent;
+        transition: all 0.3s;
     }
     
     .nav-tabs .nav-link:hover {
         border-bottom-color: var(--secondary-color);
+        color: var(--secondary-color);
         background: transparent;
     }
     
@@ -476,7 +439,7 @@
     }
     
     .nav-tabs .nav-link i {
-        font-size: 18px;
+        font-size: 16px;
     }
     
     .form-label {
@@ -497,28 +460,12 @@
         box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.1);
     }
     
-    .card {
-        border: none;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-        border-radius: 15px;
-    }
-    
-    .card-header {
-        background: white;
-        border-bottom: 2px solid #f8f9fa;
-        border-radius: 15px 15px 0 0 !important;
-        padding: 20px;
-    }
-    
-    .btn {
-        padding: 10px 25px;
-        border-radius: 8px;
-        font-weight: 500;
-    }
-    
     .btn-primary {
         background: var(--secondary-color);
         border: none;
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 500;
     }
     
     .btn-primary:hover {
@@ -530,45 +477,30 @@
     .btn-secondary {
         background: #6c757d;
         border: none;
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 500;
     }
     
-    .btn-outline-primary, .btn-outline-info, .btn-outline-danger, .btn-outline-success {
-        border-width: 2px;
-        padding: 8px 15px;
-        font-size: 14px;
-    }
-    
-    .gap-3 {
+    .gap-2 {
         gap: 10px;
-    }
-    
-    .alert-info {
-        background: #d1ecf1;
-        border: none;
-        border-radius: 10px;
-    }
-    
-    hr {
-        border-top: 2px solid #e9ecef;
     }
 </style>
 @endpush
 
 @push('scripts')
 <script>
-    // Live preview for social media icons
-    document.querySelectorAll('input[id$="_url"], input[name="whatsapp_number"]').forEach(input => {
-        input.addEventListener('input', function() {
-            // You can add live preview functionality here if needed
-            console.log('Social link updated:', this.name);
+    // Initialize Bootstrap tabs
+    document.addEventListener('DOMContentLoaded', function() {
+        var triggerTabList = [].slice.call(document.querySelectorAll('#settingsTab button'));
+        triggerTabList.forEach(function(triggerEl) {
+            var tabTrigger = new bootstrap.Tab(triggerEl);
+            
+            triggerEl.addEventListener('click', function(event) {
+                event.preventDefault();
+                tabTrigger.show();
+            });
         });
-    });
-    
-    // Confirm before reset
-    document.querySelector('button[type="reset"]').addEventListener('click', function(e) {
-        if (!confirm('Are you sure you want to reset all changes? Unsaved data will be lost.')) {
-            e.preventDefault();
-        }
     });
 </script>
 @endpush
